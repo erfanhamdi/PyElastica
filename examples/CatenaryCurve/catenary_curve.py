@@ -26,13 +26,13 @@ catenary_sim = CatenaryCurveSimulator()
 
 # Options
 PLOT_FIGURE = True
-SAVE_FIGURE = False
-SAVE_RESULTS = False
+SAVE_FIGURE = True
 
 # setting up test params
-n_elem = 100
+n_elem = 30
 density = 1000
 nu = 2e-3
+# nu = 0.5
 E = 1e6
 # For shear modulus of 1e4, nu is 99!
 poisson_ratio = 0.5
@@ -57,12 +57,12 @@ shearable_rod= CosseratRod.straight_rod(
     E,
     shear_modulus=shear_modulus,
 )
-import matplotlib.pyplot as plt
+
 plt.plot(
         shearable_rod.position_collection[2, :],
         shearable_rod.position_collection[1, :],
-        "b-",
-        label="n=" + str(shearable_rod.n_elems),
+        "b",
+        label="Initial State",
     )
 
 catenary_sim.append(shearable_rod)
@@ -94,14 +94,21 @@ total_steps = int(final_time / dt)
 timestepper = PositionVerlet()
 
 integrate(timestepper, catenary_sim, final_time, total_steps)
-if PLOT_FIGURE:
 
-    fig = plt.figure(figsize=(10, 8), frameon=True, dpi=150)
+if PLOT_FIGURE:
+    fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.plot(
         shearable_rod.position_collection[2, :],
         shearable_rod.position_collection[1, :],
-        "b-",
+        "b",
+        label="Initial State",
+    )
+    ax.plot(
+        shearable_rod.position_collection[2, :],
+        shearable_rod.position_collection[1, :],
+        "b",
+        linestyle="dashdot",
         label="n=" + str(shearable_rod.n_elems),
     )
     if SAVE_FIGURE:
